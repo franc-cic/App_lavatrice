@@ -13,21 +13,28 @@ body {
   padding: 20px;
 }
 
-h1 {
-  margin-bottom: 20px;
+h1 { margin-bottom: 20px; }
+
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.col {
+  width: 45%;
+  max-width: 200px;
 }
 
 button {
-  width: 90%;
-  max-width: 350px;
+  width: 100%;
   height: 110px;
-  font-size: 20px;
-  margin: 20px auto;
+  font-size: 18px;
   border: none;
   border-radius: 25px;
   background: #1ea7fd;
   color: white;
-  display: block;
   position: relative;
   overflow: hidden;
 }
@@ -35,16 +42,14 @@ button {
 ul {
   list-style: none;
   padding: 0;
-  max-width: 350px;
-  margin: auto;
 }
 
 li {
   background: rgba(255,255,255,0.1);
-  padding: 8px;
-  margin: 5px;
+  padding: 6px;
+  margin-top: 5px;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .bubble, .flow {
@@ -52,18 +57,25 @@ li {
   border-radius: 50%;
   pointer-events: none;
 }
-
 </style>
 </head>
 <body>
 
 <h1>Lavatrice</h1>
 
-<button onclick="pressDetersivo(this)">Detersivo</button>
-<ul id="histDet"></ul>
+<div class="container">
 
-<button onclick="pressLavatrice(this)">Avvia</button>
-<ul id="histLav"></ul>
+  <div class="col">
+    <button onclick="pressDetersivo(this)">Detersivo</button>
+    <ul id="histDet"></ul>
+  </div>
+
+  <div class="col">
+    <button onclick="pressLavatrice(this)">Avvia</button>
+    <ul id="histLav"></ul>
+  </div>
+
+</div>
 
 <script>
 
@@ -72,11 +84,16 @@ function addHistory(id, text) {
   let li = document.createElement("li");
   li.innerText = text + " - " + new Date().toLocaleTimeString();
   list.prepend(li);
+
+  // limita a 8 elementi
+  if (list.children.length > 8) {
+    list.removeChild(list.lastChild);
+  }
 }
 
 function flash(btn) {
   btn.style.background = '#00c3ff';
-  setTimeout(() => btn.style.background = '#1ea7fd', 300);
+  setTimeout(() => btn.style.background = '#1ea7fd', 250);
 }
 
 function pressDetersivo(btn) {
@@ -101,14 +118,10 @@ function bubbleEffect(btn) {
     b.style.background = "rgba(255,255,255,0.7)";
     btn.appendChild(b);
 
-    let anim = b.animate([
+    b.animate([
       { transform: "translateY(0)" },
       { transform: "translateY(-100px)", opacity: 0 }
-    ], {
-      duration: 800 + Math.random()*500
-    });
-
-    anim.onfinish = () => b.remove();
+    ], { duration: 800 }).onfinish = () => b.remove();
   }
 }
 
@@ -122,14 +135,10 @@ function flowEffect(btn) {
     f.style.background = "#00c3ff";
     btn.appendChild(f);
 
-    let anim = f.animate([
+    f.animate([
       { transform: "translateX(0)" },
-      { transform: "translateX(300px)", opacity: 0 }
-    ], {
-      duration: 600
-    });
-
-    anim.onfinish = () => f.remove();
+      { transform: "translateX(200px)", opacity: 0 }
+    ], { duration: 500 }).onfinish = () => f.remove();
   }
 }
 
