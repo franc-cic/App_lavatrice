@@ -1,70 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Lavatrice</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      margin-top: 50px;
-    }
-    button {
-      width: 200px;
-      height: 100px;
-      font-size: 18px;
-      margin: 10px;
-      border: none;
-      border-radius: 15px;
-      color: white;
-    }
-    .blue {
-      background-color: blue;
-    }
-    .green {
-      background-color: green;
-    }
-  </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lavatrice Pro</title>
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont;
+  background: linear-gradient(180deg, #0a1f44, #014f86);
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+button {
+  width: 90%;
+  max-width: 350px;
+  height: 110px;
+  font-size: 20px;
+  margin: 20px auto;
+  border: none;
+  border-radius: 25px;
+  background: #1ea7fd;
+  color: white;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  max-width: 350px;
+  margin: auto;
+}
+
+li {
+  background: rgba(255,255,255,0.1);
+  padding: 8px;
+  margin: 5px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.bubble, .flow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+</style>
 </head>
 <body>
 
-<h1>Promemoria Lavatrice</h1>
+<h1>Lavatrice</h1>
 
-<button id="detersivo" class="blue" onclick="toggle(this)">
-  Detersivo
-</button>
+<button onclick="pressDetersivo(this)">Detersivo</button>
+<ul id="histDet"></ul>
 
-<button id="lavatrice" class="blue" onclick="toggle(this)">
-  Avvia Lavatrice
-</button>
-
-<br><br>
-
-<button onclick="mostraStorico()">Mostra Storico</button>
-
-<ul id="history"></ul>
+<button onclick="pressLavatrice(this)">Avvia</button>
+<ul id="histLav"></ul>
 
 <script>
-  let history = [];
 
-  function toggle(btn) {
-    if (btn.classList.contains("blue")) {
-      btn.classList.remove("blue");
-      btn.classList.add("green");
+function addHistory(id, text) {
+  let list = document.getElementById(id);
+  let li = document.createElement("li");
+  li.innerText = text + " - " + new Date().toLocaleTimeString();
+  list.prepend(li);
+}
 
-      let now = new Date().toLocaleString();
-      history.unshift(btn.innerText + " - " + now);
-    }
-  }
+function flash(btn) {
+  btn.style.background = '#00c3ff';
+  setTimeout(() => btn.style.background = '#1ea7fd', 300);
+}
 
-  function mostraStorico() {
-    let list = document.getElementById("history");
-    list.innerHTML = "";
-    history.forEach(item => {
-      let li = document.createElement("li");
-      li.innerText = item;
-      list.appendChild(li);
+function pressDetersivo(btn) {
+  flash(btn);
+  addHistory("histDet", "Detersivo");
+  flowEffect(btn);
+}
+
+function pressLavatrice(btn) {
+  flash(btn);
+  addHistory("histLav", "Avvio");
+  bubbleEffect(btn);
+}
+
+function bubbleEffect(btn) {
+  for (let i = 0; i < 10; i++) {
+    let b = document.createElement("div");
+    b.className = "bubble";
+    b.style.width = b.style.height = Math.random()*10+5 + "px";
+    b.style.left = Math.random()*100 + "%";
+    b.style.bottom = "0";
+    b.style.background = "rgba(255,255,255,0.7)";
+    btn.appendChild(b);
+
+    let anim = b.animate([
+      { transform: "translateY(0)" },
+      { transform: "translateY(-100px)", opacity: 0 }
+    ], {
+      duration: 800 + Math.random()*500
     });
+
+    anim.onfinish = () => b.remove();
   }
+}
+
+function flowEffect(btn) {
+  for (let i = 0; i < 8; i++) {
+    let f = document.createElement("div");
+    f.className = "flow";
+    f.style.width = f.style.height = "6px";
+    f.style.left = "0";
+    f.style.top = Math.random()*100 + "%";
+    f.style.background = "#00c3ff";
+    btn.appendChild(f);
+
+    let anim = f.animate([
+      { transform: "translateX(0)" },
+      { transform: "translateX(300px)", opacity: 0 }
+    ], {
+      duration: 600
+    });
+
+    anim.onfinish = () => f.remove();
+  }
+}
+
 </script>
 
 </body>
