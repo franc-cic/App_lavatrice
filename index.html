@@ -3,6 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lavatrice Pro</title>
+
 <style>
 body {
   font-family: -apple-system, BlinkMacSystemFont;
@@ -59,6 +60,7 @@ li {
 }
 </style>
 </head>
+
 <body>
 
 <h1>Lavatrice</h1>
@@ -79,15 +81,46 @@ li {
 
 <script>
 
-function addHistory(id, text) {
-  let list = document.getElementById(id);
-  let li = document.createElement("li");
-  li.innerText = text + " - " + new Date().toLocaleTimeString();
-  list.prepend(li);
+// 🔹 carica dati salvati
+let histDet = JSON.parse(localStorage.getItem("histDet")) || [];
+let histLav = JSON.parse(localStorage.getItem("histLav")) || [];
 
-  if (list.children.length > 8) {
-    list.removeChild(list.lastChild);
+// 🔹 mostra storico all'avvio
+window.onload = () => {
+  render("histDet", histDet);
+  render("histLav", histLav);
+};
+
+function render(id, data) {
+  let list = document.getElementById(id);
+  list.innerHTML = "";
+  data.forEach(item => {
+    let li = document.createElement("li");
+    li.innerText = item;
+    list.appendChild(li);
+  });
+}
+
+function save() {
+  localStorage.setItem("histDet", JSON.stringify(histDet));
+  localStorage.setItem("histLav", JSON.stringify(histLav));
+}
+
+function addHistory(type, text) {
+  let now = new Date().toLocaleString();
+  let entry = text + " - " + now;
+
+  if (type === "histDet") {
+    histDet.unshift(entry);
+    histDet = histDet.slice(0, 8);
+  } else {
+    histLav.unshift(entry);
+    histLav = histLav.slice(0, 8);
   }
+
+  save();
+  render("histDet", histDet);
+  render("histLav", histLav);
 }
 
 function flash(btn) {
@@ -121,8 +154,7 @@ function bubbleEffect(btn) {
       { transform: "translateY(0) scale(1)", opacity: 1 },
       { transform: "translateY(-120px) scale(1.5)", opacity: 0 }
     ], {
-      duration: 700 + Math.random()*300,
-      easing: 'ease-out'
+      duration: 700 + Math.random()*300
     }).onfinish = () => b.remove();
   }
 }
