@@ -52,7 +52,7 @@ li {
   font-size: 11px;
 }
 
-.bubble, .flow {
+.bubble {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
@@ -85,7 +85,6 @@ function addHistory(id, text) {
   li.innerText = text + " - " + new Date().toLocaleTimeString();
   list.prepend(li);
 
-  // limita a 8 elementi
   if (list.children.length > 8) {
     list.removeChild(list.lastChild);
   }
@@ -99,7 +98,7 @@ function flash(btn) {
 function pressDetersivo(btn) {
   flash(btn);
   addHistory("histDet", "Detersivo");
-  flowEffect(btn);
+  bubbleEffect(btn);
 }
 
 function pressLavatrice(btn) {
@@ -109,36 +108,22 @@ function pressLavatrice(btn) {
 }
 
 function bubbleEffect(btn) {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 12; i++) {
     let b = document.createElement("div");
     b.className = "bubble";
-    b.style.width = b.style.height = Math.random()*10+5 + "px";
+    b.style.width = b.style.height = Math.random()*12+6 + "px";
     b.style.left = Math.random()*100 + "%";
     b.style.bottom = "0";
-    b.style.background = "rgba(255,255,255,0.7)";
+    b.style.background = "rgba(255,255,255,0.75)";
     btn.appendChild(b);
 
     b.animate([
-      { transform: "translateY(0)" },
-      { transform: "translateY(-100px)", opacity: 0 }
-    ], { duration: 800 }).onfinish = () => b.remove();
-  }
-}
-
-function flowEffect(btn) {
-  for (let i = 0; i < 8; i++) {
-    let f = document.createElement("div");
-    f.className = "flow";
-    f.style.width = f.style.height = "6px";
-    f.style.left = "0";
-    f.style.top = Math.random()*100 + "%";
-    f.style.background = "#00c3ff";
-    btn.appendChild(f);
-
-    f.animate([
-      { transform: "translateX(0)" },
-      { transform: "translateX(200px)", opacity: 0 }
-    ], { duration: 500 }).onfinish = () => f.remove();
+      { transform: "translateY(0) scale(1)", opacity: 1 },
+      { transform: "translateY(-120px) scale(1.5)", opacity: 0 }
+    ], {
+      duration: 700 + Math.random()*300,
+      easing: 'ease-out'
+    }).onfinish = () => b.remove();
   }
 }
 
