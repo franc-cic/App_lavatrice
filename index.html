@@ -106,15 +106,15 @@ function save() {
   localStorage.setItem("histLav", JSON.stringify(histLav));
 }
 
-function addHistory(type, text) {
-  let now = new Date().toLocaleString();
-  let entry = text + " - " + now;
+// ✅ SOLO ORA (senza testo)
+function addHistory(type) {
+  let now = new Date().toLocaleString("it-IT");
 
   if (type === "histDet") {
-    histDet.unshift(entry);
+    histDet.unshift(now);
     histDet = histDet.slice(0, 8);
   } else {
-    histLav.unshift(entry);
+    histLav.unshift(now);
     histLav = histLav.slice(0, 8);
   }
 
@@ -128,18 +128,43 @@ function flash(btn) {
   setTimeout(() => btn.style.background = '#1ea7fd', 250);
 }
 
+// 🔹 DETERSIVO → effetto cascata
 function pressDetersivo(btn) {
   flash(btn);
-  addHistory("histDet", "Detersivo");
-  bubbleEffect(btn);
+  addHistory("histDet");
+  cascadeEffect(btn);
 }
 
+// 🔹 LAVATRICE → bolle
 function pressLavatrice(btn) {
   flash(btn);
-  addHistory("histLav", "Avvio");
+  addHistory("histLav");
   bubbleEffect(btn);
 }
 
+// 🔹 CASCATA (gocce che scendono)
+function cascadeEffect(btn) {
+  for (let i = 0; i < 15; i++) {
+    let drop = document.createElement("div");
+    drop.className = "bubble";
+    drop.style.width = drop.style.height = Math.random()*6+4 + "px";
+    drop.style.left = Math.random()*100 + "%";
+    drop.style.top = "-10px";
+    drop.style.background = "rgba(255,255,255,0.8)";
+
+    btn.appendChild(drop);
+
+    drop.animate([
+      { transform: "translateY(0)", opacity: 1 },
+      { transform: "translateY(120px)", opacity: 0 }
+    ], {
+      duration: 400 + Math.random()*300,
+      easing: "ease-in"
+    }).onfinish = () => drop.remove();
+  }
+}
+
+// 🔹 BOLLE (unchanged)
 function bubbleEffect(btn) {
   for (let i = 0; i < 12; i++) {
     let b = document.createElement("div");
